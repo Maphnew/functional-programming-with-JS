@@ -1,4 +1,4 @@
-const _ = require('./js/_')
+const { _filter, _map } = require('./js/_')
 const partial = require('./js/partial')
 
 var users = [
@@ -50,15 +50,15 @@ console.log(ages)
 // [ 27, 25, 26, 23 ]
 
 // 2. _filter, _map으로 리팩토링
-function _filter(list, predi) {
-    var new_list = []
-    for (const element of list) {
-        if (predi(element)) {
-            new_list.push(element)
-        }
-    }
-    return new_list
-}
+// function _filter(list, predi) {
+//     var new_list = []
+//     for (const element of list) {
+//         if (predi(element)) {
+//             new_list.push(element)
+//         }
+//     }
+//     return new_list
+// }
 // 응용형 함수, 고차함수
 
 var over30 =  _filter(users, function(user) { return user.age >= 30 })
@@ -87,13 +87,13 @@ console.log(
 )
 // [ 1, 3 ] [ 2, 4 ]
 
-function _map(list, mapper) {
-    var new_list = []
-    for (const element of list){
-        new_list.push(mapper(element))
-    }
-    return new_list
-}
+// function _map(list, mapper) {
+//     var new_list = []
+//     for (const element of list){
+//         new_list.push(mapper(element))
+//     }
+//     return new_list
+// }
 
 var names = _map(over30, function(user) { return user.name})
 console.log('names:',names)
