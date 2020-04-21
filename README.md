@@ -73,3 +73,70 @@ console.log( obj2.val ) // 30
 ---
 > 일급 함수   
 - 함수를 값으로 정의할 수 있다.
+
+### 2. 일급함수, add_maker, 함수로 함수 실행하기
+- 함수를 값으로 다룰 수 있는 개념
+```JS
+var f1 = function(a) { return a * a }
+console.log(f1)
+// function(a) { return a * a }
+
+var f2 = add
+console.log(f2)
+// function add(a, b) {
+//     return a + b;
+// }
+```
+```JS
+function f3(f) {
+    return f()
+}
+
+console.log( f3(function() { return 10 }) )
+// 10
+console.log( f3(function() { return 20 }) )
+// 20
+```
+- add_maker
+```JS
+function add_make(a) {
+    return function(b) {
+        return a + b
+    }
+}
+```
+- Closer & Pure Function
+- A pure function is a function where the return value is only determined by its input values, without observable side effects.
+```JS
+// Closer & Pure function
+    return function(b) {
+        return a + b
+    }
+```
+- Uses
+```JS
+var add10 = add_maker(10)
+
+console.log( add10(20) )
+
+var add5 = add_maker(5)
+var add15 = add_maker(15)
+
+console.log( add5(10) )
+console.log( add15(10) )
+```
+
+```JS
+function f4(f1,f2,f3) {
+    return f3(f1() + f2())
+}
+
+console.log(
+    f4(
+        function() {return 2},
+        function() {return 1},
+        function(a) {return a * a}
+    )
+)
+// 9
+```
