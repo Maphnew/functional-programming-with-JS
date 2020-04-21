@@ -121,3 +121,44 @@ console.log(
 )
 // [ 'PJ', 'HA', 'JE', 'MP' ]
 
+// 3. 다형성
+
+console.log(
+    [1,2,3,4].map((val) => val * 2)
+)
+
+console.log(
+    [1,2,3,4].filter((val) => val % 2)
+)
+
+// method => array 만 사용가능
+
+// // $('div') => array like 객체
+// console.log(document.querySelectorAll('body'))
+// // [body]
+// console.log(document.querySelectorAll('*'))
+// // [html, head, ...]
+
+// console.log(
+//     document.querySelectorAll('*').map(function(node) {
+//         return node.nodeName;
+//     })
+// )
+// // ERROR! because 'document.querySelectorAll('*')' is not an array!
+// console.log(
+//     _map(document.querySelectorAll('*'), function(node) {
+//         return node.nodeName;
+//     })
+// )
+// // [html, head, ...]
+
+// 순수함수는 method 보다 다형성면에서 장점을 갖는다.
+
+// 내부 다형성
+_map([1,2,3,4], function(v) {
+    return v + 10
+})
+// callback 함수: 모든 수행 후 다시 돌려줄 때
+// predicate 함수: 조건을 return하는 함수
+// iter: 반복 수행 함수
+// mapper: mapping 하는 함수
