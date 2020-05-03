@@ -1,4 +1,11 @@
-const { _filter, _map } = require('./js/_')
+const { 
+    _filter,
+    _map,
+    _curry,
+    _curryr,
+    _get,
+    _each
+ } = require('./js/_')
 const partial = require('./js/partial')
 
 var users = [
@@ -166,17 +173,18 @@ _map([1,2,3,4], function(v) {
 // 3. 커링
 // 1. _curry, _curryr
 
-function _curry(fn) {
-    return function(a,b) {
-        return arguments.length == 2 ? fn(a,b) : function(b) { return fn(a,b) }
-    }
-}
+// _.js 로 옮김
+// function _curry(fn) {
+//     return function(a,b) {
+//         return arguments.length == 2 ? fn(a,b) : function(b) { return fn(a,b) }
+//     }
+// }
 
-function _curryr(fn) {
-    return function(a, b) {
-        return arguments.length == 2 ? fn(a, b) : function(b) { return fn(b, a)}
-    }
-}
+// function _curryr(fn) {
+//     return function(a, b) {
+//         return arguments.length == 2 ? fn(a, b) : function(b) { return fn(b, a)}
+//     }
+// }
 
 var add = _curry(function(a,b) {
     return a + b
@@ -201,9 +209,11 @@ var sub10 = sub(10)
 console.log(sub10(5))
 
 // 2. _get 만들어 좀 더 간단하게 하기
-var _get = _curryr(function(obj, key) {
-    return obj == null ? undefined : obj[key]
-})
+
+// _.js 로 옮김
+// var _get = _curryr(function(obj, key) {
+//     return obj == null ? undefined : obj[key]
+// })
 
 console.log(
     _map(
@@ -231,3 +241,48 @@ console.log(get_name(users[3]))
 
 // console.log(users[10].name) // error
 console.log(_get(users[10], 'name'))
+
+console.clear()
+// 4. _reduce 만들기
+
+var slice = Array.prototype.slice;
+function _rest(list, num) {
+    return slice.call(list, num || 1)
+}
+
+function _reduce(list, iter, memo) {
+    if (arguments.length == 2) {
+        memo = list[0]
+        // list = list.slice(1) // slice method는 array에만 사용되는 method / html 참조
+        list = _rest(list)
+    }
+    // return iter(iter(iter(0,1),2),3)
+    _each(list, function(val) {
+        memo = iter(memo, val)
+    })
+    return memo
+}
+
+console.log(
+    _reduce([1, 2, 3, 4], add, 0)
+) // 10
+
+// memo = add(0,1)
+// memo = add(memo ,2)
+// memo = add(memo ,3)
+// return memo
+
+// add(add(add(0,1),2),3)
+
+console.log(
+    _reduce([1, 2, 3], add, 10)
+) // 16
+
+// 세번째 인자가 없을 때
+console.log(
+    _reduce([1, 2, 3], add)
+) // 6
+
+console.log(
+    _reduce([1, 2, 3, 4], add, 10)
+) // 6

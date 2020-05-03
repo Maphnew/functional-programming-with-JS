@@ -479,6 +479,88 @@ console.log(_get(users[10], 'name'))
 ```
 ### 5. reduce
 
+- reduce 함수: 누산기, 누적 계산, 배열의 요소를 차례대로 원하는 함수에 넣어 누적값을 만들고 하나의 값을 리턴
+
+```JS
+// 4. _reduce 만들기
+
+var slice = Array.prototype.slice;
+function _rest(list, num) {
+    return slice.call(list, num || 1)
+}
+
+function _reduce(list, iter, memo) {
+    if (arguments.length == 2) {
+        memo = list[0]
+        // list = list.slice(1) // slice method는 array에만 사용되는 method / html 참조
+        list = _rest(list)
+    }
+    // return iter(iter(iter(0,1),2),3)
+    _each(list, function(val) {
+        memo = iter(memo, val)
+    })
+    return memo
+}
+
+console.log(
+    _reduce([1, 2, 3, 4], add, 0)
+) // 10
+
+// memo = add(0,1)
+// memo = add(memo ,2)
+// memo = add(memo ,3)
+// return memo
+
+// add(add(add(0,1),2),3)
+
+console.log(
+    _reduce([1, 2, 3], add, 10)
+) // 16
+
+// 세번째 인자가 없을 때
+console.log(
+    _reduce([1, 2, 3], add)
+) // 6
+
+console.log(
+    _reduce([1, 2, 3, 4], add, 10)
+) // 6
+```
+- slice method를 array like 배열에 사용하기 위한 방법
+- Array.prototype.slice.call 
+
+```html
+
+<script>
+    var a = document.querySelectorAll('*')
+    // a.slice(1)
+    // error
+
+    var slice = Array.prototype.slice;
+    console.log(slice.call(a, 2))
+    // (5) [meta, body, script, script, script]
+    
+    console.log(a)
+    // NodeList(7) [html, head, meta, body, script, script, script]
+
+    console.log(slice.call(a, 2).constructor)
+    // ƒ Array() { [native code] }
+
+    var a = { 0:1, 1:20, 2: 30, length:3 }
+    console.log(a)
+    // {0: 1, 1: 20, 2: 30, length: 3}
+    console.log(a[0])
+    // 1
+    console.log(a[1])
+    // 20
+    console.log(a[2])
+    // 30
+    console.log(slice.call(a, 1))
+    // (2) [20, 30]
+    
+
+</script>
+```
 ### 6. 파이프라인, _go, _pipe, 화살표 함수
 
 ### 7. 다형성 높이기, _keys, 에러

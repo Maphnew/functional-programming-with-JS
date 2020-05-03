@@ -53,6 +53,36 @@
             return node.nodeName;
         })
     )
-    // [html, head, ...]
+    // (6) ["HTML", "HEAD", "META", "BODY", "SCRIPT", "SCRIPT"]
+    </script>
+
+    <script>
+        var a = document.querySelectorAll('*')
+        // a.slice(1)
+        // error
+
+        var slice = Array.prototype.slice;
+        console.log(slice.call(a, 2))
+        // (5) [meta, body, script, script, script]
+        
+        console.log(a)
+        // NodeList(7) [html, head, meta, body, script, script, script]
+
+        console.log(slice.call(a, 2).constructor)
+        // ƒ Array() { [native code] }
+
+        var a = { 0:1, 1:20, 2: 30, length:3 }
+        console.log(a)
+        // {0: 1, 1: 20, 2: 30, length: 3}
+        console.log(a[0])
+        // 1
+        console.log(a[1])
+        // 20
+        console.log(a[2])
+        // 30
+        console.log(slice.call(a, 1))
+        // (2) [20, 30]
+        
+
     </script>
 </body>

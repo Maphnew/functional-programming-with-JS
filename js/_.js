@@ -1,3 +1,20 @@
+
+function _curry(fn) {
+    return function(a,b) {
+        return arguments.length == 2 ? fn(a,b) : function(b) { return fn(a,b) }
+    }
+}
+
+function _curryr(fn) {
+    return function(a, b) {
+        return arguments.length == 2 ? fn(a, b) : function(b) { return fn(b, a)}
+    }
+}
+
+var _get = _curryr(function(obj, key) {
+    return obj == null ? undefined : obj[key]
+})
+
 function _filter(list, predi) {
     var new_list = []
     _each(list, function(val) {
@@ -31,5 +48,9 @@ function _each(list, iter) {
 
 module.exports = {
     _filter,
-    _map
+    _map,
+    _curry,
+    _curryr,
+    _get,
+    _each
 }
