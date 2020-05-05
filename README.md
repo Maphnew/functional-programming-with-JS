@@ -651,4 +651,159 @@ var add = (a, b) => ({ val: a + b })
 ```
 ### 7. 다형성 높이기, _keys, 에러
 
+- 함수형 프로그래밍에서는 예외적인 데이터가 들어오는 것에 대해 다형성을 높이는 것으로 해결하기도 함
+- 예를 들어 _each에 null이나 undefined가 들어올 때 에러가 나지 않도록 처리
+
+- _each error 잡기
+```JS
+var _length = _get('length')
+
+function _each(list, iter) {
+    for (var i = 0, len = _length(list); i < len; i++){
+        iter(list[i])
+    }
+    return list
+}
+```
+#### 1. _each에 null 넣어도 에러 안나게
+```JS
+    // 1. _each에 null 넣어도 에러 안나게
+_each(null, console.log)
+console.log(_map(null, function(v) {return v})) // []
+console.log(_filter(null, function(v) {return v})) // []
+
+_go([1,2,3,4], 
+    _filter(function(v) {return v % 2;}),
+    _map(function(v) {return v * v;}),
+    console.log
+) // [ 1, 9 ]
+
+_go(null, 
+    _filter(function(v) {return v % 2;}),
+    _map(function(v) {return v * v;}),
+    console.log
+) // []
+
+// 예외처리하지 않음.
+// 에러 내지 않음.
+// ORM 이나 MVC패턴 framework 사용할 때 underscore, Lodash를 사용하는 것이 대부분
+```
+#### 2. _keys 만들기 & 3. _keys에서도 _is_object인지 검사하여 null 에러 안나게
+```JS
+function _is_object(obj) {
+    return typeof obj == 'object' && !!obj;
+}
+
+function _keys(obj) {
+    return _is_object(obj) ? Object.keys(obj) : [];
+}
+```
+```JS
+    // 2. _keys 만들기
+    // 3. _keys에서도 _is_object인지 검사하여 null 에러 안나게
+console.log(_keys({name: 'ID', age:33}))
+console.log(_keys([1,2,3,4]))
+console.log(_keys(10))
+console.log(_keys(null))
+
+```
+#### 4. _each 외부 다형성 높이기
+```JS
+function _each(list, iter) {
+    var keys = _keys(list)
+
+    for (var i = 0, len = keys.length; i < len; i++){
+        iter(list[keys[i]])
+    }
+    return list
+}
+```
+```JS
+    // 4. _each 외부 다형성 높이기
+
+_each({
+    13: 'ID',
+    19: 'HD',
+    29: 'YD'
+}, function(name) {
+    console.log(name)
+})
+// ID
+// HD
+// YD
+
+console.log(_map({
+    13: 'ID',
+    19: 'HD',
+    29: 'YD'
+}, function(name) {
+    return name.toLowerCase()
+})) // [ 'id', 'hd', 'yd' ]
+
+_go(
+    {
+        13: 'ID',
+        19: 'HD',
+        29: 'YD'
+    },
+    _map(function(name) {
+        return name.toLowerCase()
+    }),
+    console.log
+) // [ 'id', 'hd', 'yd' ]
+
+_go(
+    users,
+    _map(function(user){
+        return user.name
+    }),
+    _map(function(name) {
+        return name.toLowerCase()
+    }),
+    console.log
+)
+// [
+//     'id', 'bj', 'jm',
+//     'pj', 'ha', 'je',
+//     'ji', 'mp'
+//   ]
+
+_go(
+    null,
+    _map(function(user){
+        return user.name
+    }),
+    _map(function(name) {
+        return name.toLowerCase()
+    }),
+    console.log
+) // []
+
+_go(
+    {
+        1: users[0],
+        3: users[2],
+        5: users[4]
+    },
+    console.log
+)
+// {
+//     '1': { id: 1, name: 'ID', age: 36 },
+//     '3': { id: 3, name: 'JM', age: 32 },
+//     '5': { id: 5, name: 'HA', age: 25 }
+//  }
+
+_go(
+    {
+        1: users[0],
+        3: users[2],
+        5: users[4]
+    },
+    _map(function(user) {
+        return user.name.toLowerCase()
+    }),
+    console.log
+) // [ 'id', 'jm', 'ha' ]
+```
+
 ## Section 3. 컬렉션 중심 프로그래밍
