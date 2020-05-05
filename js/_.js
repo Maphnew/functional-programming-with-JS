@@ -46,11 +46,50 @@ function _each(list, iter) {
     return list
 }
 
+var _map = _curryr(_map), 
+    _filter = _curryr(_filter)
+
+
+var slice = Array.prototype.slice;
+function _rest(list, num) {
+    return slice.call(list, num || 1)
+}
+
+function _reduce(list, iter, memo) {
+    if (arguments.length == 2) {
+        memo = list[0]
+        // list = list.slice(1) // slice method는 array에만 사용되는 method / html 참조
+        list = _rest(list)
+    }
+    // return iter(iter(iter(0,1),2),3)
+    _each(list, function(val) {
+        memo = iter(memo, val)
+    })
+    return memo
+}
+
+function _pipe() {
+    var fns = arguments;
+    return function(arg) {
+        return _reduce(fns, function(arg, fn){
+            return fn(arg)
+        }, arg)
+    }
+}
+
+function _go(arg) {
+    var fns = _rest(arguments)
+    return _pipe.apply(null, fns)(arg)
+}
+
 module.exports = {
     _filter,
     _map,
     _curry,
     _curryr,
     _get,
-    _each
+    _each,
+    _reduce,
+    _pipe,
+    _go
 }

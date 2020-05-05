@@ -4,7 +4,10 @@ const {
     _curry,
     _curryr,
     _get,
-    _each
+    _each,
+    _reduce,
+    _pipe,
+    _go
  } = require('./js/_')
 const partial = require('./js/partial')
 
@@ -245,24 +248,6 @@ console.log(_get(users[10], 'name'))
 console.clear()
 // 4. _reduce 만들기
 
-var slice = Array.prototype.slice;
-function _rest(list, num) {
-    return slice.call(list, num || 1)
-}
-
-function _reduce(list, iter, memo) {
-    if (arguments.length == 2) {
-        memo = list[0]
-        // list = list.slice(1) // slice method는 array에만 사용되는 method / html 참조
-        list = _rest(list)
-    }
-    // return iter(iter(iter(0,1),2),3)
-    _each(list, function(val) {
-        memo = iter(memo, val)
-    })
-    return memo
-}
-
 console.log(
     _reduce([1, 2, 3, 4], add, 0)
 ) // 10
@@ -286,3 +271,96 @@ console.log(
 console.log(
     _reduce([1, 2, 3, 4], add, 10)
 ) // 6
+
+// 5. 파이프라인 만들기
+    // 1. _pipe
+
+var f1 = _pipe(
+    function(a) {return a+1},
+    function(a) {return a*2},
+    function(a) {return a*a}
+)
+
+console.log( f1(1) )
+
+    // 2. _go
+_go(1,
+    function(a) {return a+1},
+    function(a) {return a*2},
+    function(a) {return a*a},
+    console.log
+)
+
+    // 3. users에 _go 적용
+console.log(
+    _map(
+        _filter(users, function(user) { return user.age >= 30 }),
+        _get('name')
+    )
+)
+
+console.log(
+    _map(
+        _filter(users, function(user) { return user.age < 30 }),
+        _get('age')
+    )
+)
+
+_go(users,
+    function(users) {
+        return _filter(users, function(user) {
+            return user.age >= 30
+        })
+    },
+    function(users) {
+        return _map(users, _get('name'))
+    },
+    console.log
+)
+
+//
+_go(users,
+    _filter(function(user) { return user.age >= 30 }),
+    _map(_get('name')),
+    console.log
+)
+
+_go(users,
+    function(users) {
+        return _filter(users, function(user) {
+            return user.age < 30
+        })
+    },
+    function(users) {
+        return _map(users, _get('age'))
+    },
+    console.log
+)
+
+//
+_go(users,
+    _filter(user => user.age < 30),
+    _map(_get('age')),
+    console.log
+)
+
+
+console.log(_map([1,2,3], function(val) {return val * 2}))
+
+console.log(
+    _map(
+        function(val) {return val * 2}
+    )([1,2,3])
+)
+
+    // 4. 화살표 함수 간단히
+
+var a = function(user) {return user.age >= 30};
+var a = user => user.age >= 30;
+
+var add = function(a, b) { return a + b }
+var add = (a, b) => a + b
+var add = (a, b) => {
+    return a + b
+}
+var add = (a, b) => ({ val: a + b })

@@ -563,6 +563,92 @@ console.log(
 ```
 ### 6. 파이프라인, _go, _pipe, 화살표 함수
 
+#### 1. _pipe 함수: _reduce와 같지만 arguments를 함수들로 받음
+```JS
+function _pipe() {
+    var fns = arguments;
+    return function(arg) {
+        return _reduce(fns, function(arg, fn){
+            return fn(arg)
+        }, arg)
+    }
+}
+```
+
+```JS
+var f1 = _pipe(
+    function(a) {return a+1},
+    function(a) {return a*2},
+    function(a) {return a*a}
+)
+
+console.log( f1(1) )
+```
+
+#### 2. _go 함수
+```JS
+function _go(arg) {
+    var fns = _rest(arguments)
+    return _pipe.apply(null, fns)(arg)
+}
+```
+
+```JS
+_go(1,
+    function(a) {return a+1},
+    function(a) {return a*2},
+    function(a) {return a*a},
+    console.log
+)
+```
+#### 3. users에 _go 적용
+1. original one
+```JS
+console.log(
+    _map(
+        _filter(users, function(user) { return user.age >= 30 }),
+        _get('name')
+    )
+)
+```
+2. _go
+```JS
+_go(users,
+    function(users) {
+        return _filter(users, function(user) {
+            return user.age >= 30
+        })
+    },
+    function(users) {
+        return _map(users, _get('name'))
+    },
+    console.log
+)
+```
+3. _map과 _filter에 curryr 적용
+```JS
+var _map = _curryr(_map), 
+    _filter = _curryr(_filter)
+```
+```JS
+_go(users,
+    _filter(function(user) { return user.age >= 30 }),
+    _map(_get('name')),
+    console.log
+)
+```
+#### 4. 화살표 함수 간단히
+```JS
+var a = function(user) {return user.age >= 30};
+var a = user => user.age >= 30;
+
+var add = function(a, b) { return a + b }
+var add = (a, b) => a + b
+var add = (a, b) => {
+    return a + b
+}
+var add = (a, b) => ({ val: a + b })
+```
 ### 7. 다형성 높이기, _keys, 에러
 
 ## Section 3. 컬렉션 중심 프로그래밍
