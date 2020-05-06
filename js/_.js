@@ -94,6 +94,12 @@ function _go(arg) {
     return _pipe.apply(null, fns)(arg)
 }
 
+var _values = _map(_identity)
+
+function _identity(val) {
+    return val
+}
+
 module.exports = {
     _filter,
     _map,
@@ -104,5 +110,7 @@ module.exports = {
     _reduce,
     _pipe,
     _go,
-    _keys
+    _keys,
+    _values,
+    _identity
 }

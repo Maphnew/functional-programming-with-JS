@@ -807,3 +807,82 @@ _go(
 ```
 
 ## Section 3. 컬렉션 중심 프로그래밍
+- 컬렉션 중심 프로그래밍의 4가지 유형과 함수
+
+1. 수집하기 - map, values, pluck
+2. 거르기 - filter, reject, compact, without
+3. 찾아내기 - find, find_index, some, every
+4. 접기(축약) - reduce, min_by, max_by
+5. 접기(축약) - group_by, count_by, 조합
+
+### 1. 수집하기 - map, values, pluck
+
+```JS
+console.log(
+    _map(users, function(user) {
+        return user.name
+    })
+)
+```
+- 1. values
+```JS
+//      1. values
+
+// function _values(data) {
+//     return _map(data, function(val) {
+//         return val
+//     })
+// }
+
+// function _values(data) {
+//     return _map(data, _identity)
+// }
+
+// var _values = _map(_identity)
+
+// function _identity(val) {
+//     return val
+// }
+
+var _values = _map(_identity)
+
+function _identity(val) {
+    return val
+}
+```
+```JS
+console.log(users[0])
+console.log(_keys(users[0]))
+console.log(_values(users[0]))
+
+var a = 10
+console.log(_identity(a))
+
+console.log(_map(_identity)(users[0]))
+```
+```JS
+//      2. pluck
+
+// function _pluck(data, key) {
+//     return _map(data, function(obj) {
+//         return obj[key]
+//     })
+// }
+
+function _pluck(data, key) {
+    return _map(data, _get(key))
+}
+```
+```JS
+console.log(_pluck(users, 'age'))
+console.log(_pluck(users, 'name'))
+console.log(_pluck(users, 'id'))
+// [33, 22, 11, ...]
+
+```
+
+
+### 2. 거르기 - reject, compact
+### 3. 찾아내기 - find, find_index, some, every
+### 4. 접기 - reduce, min_by, max_by
+### 5. 접기 - group_by, count_by, 조합
