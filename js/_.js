@@ -100,6 +100,10 @@ function _identity(val) {
     return val
 }
 
+function _pluck(data, key) {
+    return _map(data, _get(key))
+}
+
 module.exports = {
     _filter,
     _map,
@@ -112,5 +116,6 @@ module.exports = {
     _go,
     _keys,
     _values,
-    _identity
+    _identity,
+    _pluck,
 }

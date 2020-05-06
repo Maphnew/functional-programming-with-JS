@@ -10,7 +10,8 @@ const {
     _go,
     _keys,
     _values,
-    _identity
+    _identity,
+    _pluck
  } = require('./js/_')
 const partial = require('./js/partial')
 
@@ -72,9 +73,7 @@ console.log(_map(_identity)(users[0]))
 //     })
 // }
 
-function _pluck(data, key) {
-    return _map(data, _get(key))
-}
+
 
 
 console.log(_pluck(users, 'age'))
